@@ -1,8 +1,9 @@
 import { Schema, model } from "mongoose";
-import { UserType } from "./user.interface";
+import { StaticMethodType, UserType } from "./user.interface";
 import bcrypt from "bcrypt";
+import config from "@/config";
 
-const userSchema = new Schema<UserType>(
+const userSchema = new Schema<UserType, StaticMethodType<UserType>>(
   {
     email: {
       type: String,
@@ -24,7 +25,28 @@ const userSchema = new Schema<UserType>(
   }
 );
 
+userSchema.pre("save", async function (next) {
+  this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt));
+  next();
+});
 
-const User = model<UserType>("User", userSchema);
+userSchema.static(
+  "isPasswordMatched",
+  async function (
+    givenPassword: string,
+    savedPassword: string
+  ): Promise<boolean> {
+    return await bcrypt.compare(givenPassword, savedPassword);
+  }
+);
+
+userSchema.static(
+  "isUserExist",
+  async function (email: number): Promise<UserType & {id: string} | null> {
+    return await User.findOne({ email }, { id: 1, email: 1, password: 1 });
+  }
+);
+
+const User = model<UserType, StaticMethodType<UserType>>("User", userSchema);
 
 export default User;

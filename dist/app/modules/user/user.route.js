@@ -9,6 +9,6 @@ const express_1 = __importDefault(require("express"));
 const user_validation_1 = require("./user.validation");
 const user_controller_1 = require("./user.controller");
 const router = express_1.default.Router();
-router.post("/signup", (0, validateRequest_1.default)(user_validation_1.UserValidation.signupSchemaValidation), user_controller_1.UserController.signupUser);
-router.get("/login", (req, res) => { });
+router.post("/signup", (0, validateRequest_1.default)(user_validation_1.UserValidation.userSchemaValidation), user_controller_1.UserController.signupUser);
+router.post("/login", (0, validateRequest_1.default)(user_validation_1.UserValidation.userSchemaValidation), user_controller_1.UserController.loginUser);
 exports.UserRoutes = router;

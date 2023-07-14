@@ -1,13 +1,20 @@
+import { Document, Model } from "mongoose";
 
-type UserType = {
-    email: string;
-    password: string;
-    picture?: string
-}
+type User = {
+  email: string;
+  password: string;
+  picture?: string;
+};
 
+type StaticMethodType<T extends UserType> = {
+  isPasswordMatched: (
+    givenPassword: string,
+    savedPassword: string
+  ) => Promise<boolean>;
 
+  isUserExist(email: string): Promise<T | null>;
+} & Model<T>;
 
+type UserType = User & Document
 
-export {
-    UserType
-}
+export { UserType, StaticMethodType };

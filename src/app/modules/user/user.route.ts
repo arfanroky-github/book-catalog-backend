@@ -9,7 +9,7 @@ router.post(
   validateRequest(UserValidation.userSchemaValidation),
   UserController.signupUser
 );
-router.get(
+router.post(
   "/login",
   validateRequest(UserValidation.userSchemaValidation),
   UserController.loginUser
