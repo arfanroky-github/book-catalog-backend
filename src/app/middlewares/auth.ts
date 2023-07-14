@@ -36,3 +36,6 @@ const auth = () => async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+
+export default auth;
