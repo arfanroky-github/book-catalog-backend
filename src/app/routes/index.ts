@@ -1,5 +1,6 @@
 import { UserRoutes } from "@/modules/user/user.route";
 import express, { Router } from "express";
+import { BookRoutes } from "../modules/book/book.route";
 const router = express.Router();
 
 type RouteType = {
@@ -11,6 +12,10 @@ const moduleRoutes: RouteType[] = [
   {
     path: "/auth",
     route: UserRoutes,
+  },
+  {
+    path: "/book",
+    route: BookRoutes,
   },
 ];
 

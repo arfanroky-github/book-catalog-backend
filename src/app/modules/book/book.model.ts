@@ -16,8 +16,10 @@ const bookSchema = new Schema<BookType>(
       required: true,
     },
     publication: {
-      type: Date,
+      type: String,
       required: true,
+      minlength: 4,
+      maxlength: 4,
     },
     reviews: String,
   },

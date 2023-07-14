@@ -17,14 +17,17 @@ const createBookSchema = z.object({
     genre: z.string({
       required_error: "Genre is required",
     }),
-    publication: z.date({
-      required_error: "Publication is required",
-    }),
+    publication: z
+      .string({
+        required_error: "Publication is required",
+      })
+      .min(4)
+      .max(4),
     reviews: z.object({
       name: z.string(),
       picture: z.string(),
       message: z.string(),
-    }),
+    }).optional(),
   }),
 });
 

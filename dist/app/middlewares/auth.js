@@ -17,9 +17,10 @@ const ApiError_1 = __importDefault(require("@/errors/ApiError"));
 const jwtHelper_1 = require("@/helpers/jwtHelper");
 const http_status_1 = __importDefault(require("http-status"));
 const auth = () => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         // get token from headers
-        const token = req.headers.authorization;
+        const token = (_a = req.headers['authorization']) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         // if token is not provided
         if (!token) {
             throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, "You not authorized to access this resource");
@@ -38,3 +39,4 @@ const auth = () => (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         next(error);
     }
 });
+exports.default = auth;

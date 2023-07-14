@@ -7,7 +7,7 @@ const router = express.Router();
 
 // create book
 router.post(
-  "/book",
+  "/create-book",
   auth(),
   validateRequest(BookValidation.createBookSchema),
   BookController.createBook

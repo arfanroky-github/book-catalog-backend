@@ -4,12 +4,11 @@ import { JwtHelper } from "@/helpers/jwtHelper";
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
-import User from "../modules/user/user.model";
 
 const auth = () => async (req: Request, res: Response, next: NextFunction) => {
   try {
     // get token from headers
-    const token = req.headers.authorization;
+    const token = req.headers['authorization']?.split(' ')[1] as string;
     // if token is not provided
     if (!token) {
       throw new ApiError(

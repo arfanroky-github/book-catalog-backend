@@ -8,7 +8,7 @@ type BookType = {
   title: string;
   author: string;
   genre: string;
-  publication: Date;
+  publication: string;
   reviews?: Reviews;
   //   Rating?: number;
 };
