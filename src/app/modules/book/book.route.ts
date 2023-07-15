@@ -32,10 +32,16 @@ router.get("/", auth(), BookController.getAllBooks);
 
 // add book wishlist
 router.post(
-  "/:id/wishlist",
+  "/:bookId/wishlist/:userId",
   auth(),
-  validateRequest(BookValidation.wishlistSchema),
   BookController.addBookWishlist
+);
+
+// remove book wishlist
+router.delete(
+  "/:bookId/wishlist/:userId",
+  auth(),
+  BookController.removeBookWishlist
 );
 
 // get all wishlisted books

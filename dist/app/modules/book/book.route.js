@@ -21,7 +21,9 @@ router.delete("/:id", (0, auth_1.default)(), book_controller_1.BookController.de
 // get all books
 router.get("/", (0, auth_1.default)(), book_controller_1.BookController.getAllBooks);
 // add book wishlist
-router.post("/:id/wishlist", (0, auth_1.default)(), (0, validateRequest_1.default)(book_validation_1.BookValidation.wishlistSchema), book_controller_1.BookController.addBookWishlist);
+router.post("/:bookId/wishlist/:userId", (0, auth_1.default)(), book_controller_1.BookController.addBookWishlist);
+// remove book wishlist
+router.delete("/:bookId/wishlist/:userId", (0, auth_1.default)(), book_controller_1.BookController.removeBookWishlist);
 // get all wishlisted books
 router.get("/:userId/wishlist", (0, auth_1.default)(), book_controller_1.BookController.getAllWishlistedBooks);
 exports.BookRoutes = router;

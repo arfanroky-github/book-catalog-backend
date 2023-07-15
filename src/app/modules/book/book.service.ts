@@ -131,24 +131,27 @@ async function getAllBooksFromDb(
 
 // add book wishlist in database by id
 async function addBookWishlistInDb(
-  id: string,
-  userId: Types.ObjectId
+  bookId: string,
+  userId: string
 ): Promise<BookType | null> {
-  const book = await Book.findById(id);
+  const book = await Book.findById(bookId);
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, "Book not found");
   }
-  const user = User.isUserExist(userId.toString());
+  const user = User.isUserExist(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
 
+  // convert string to object id
+  const convertedUserId: Types.ObjectId = new mongoose.Types.ObjectId(userId);
+
   // Check if the book is already in wishlist
-  if (book.wishlist.includes(userId)) {
+  if (book.wishlist.includes(convertedUserId)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Book already in wishlist");
   }
   const result = await Book.findOneAndUpdate(
-    { _id: id },
+    { _id: bookId },
     { $addToSet: { wishlist: userId } },
     { new: true }
   );
@@ -156,6 +159,43 @@ async function addBookWishlistInDb(
   return result;
 }
 
+// remove book wishlist in database by id
+async function removeBookWishlistFromDb(bookId: string, userId: string) {
+  const book = await Book.findById(bookId);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Book not found");
+  }
+  const user = User.isUserExist(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  // convert string to object id
+  const convertedUserId: Types.ObjectId = new mongoose.Types.ObjectId(userId);
+
+  // check book is in wishlist or not
+  if (!book.wishlist.includes(convertedUserId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Book is not in wishlist");
+  }
+
+  const result = await Book.findOneAndUpdate(
+    { _id: bookId },
+    { $pull: { wishlist: userId } },
+    {
+      new: true,
+      projection: {
+        wishlist: 0,
+        __v: 0,
+        createdAt: 0,
+        updatedAt: 0,
+      },
+    }
+  );
+
+  return result;
+}
+
+// get all wishlisted books from database by user id
 async function getAllWishlistedBooksFromDb(userId: string) {
   const user = User.isUserExist(userId);
   if (!user) {
@@ -183,4 +223,5 @@ export const BookService = {
   deleteSingleBookFromDb,
   addBookWishlistInDb,
   getAllWishlistedBooksFromDb,
+  removeBookWishlistFromDb,
 };

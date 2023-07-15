@@ -27,6 +27,7 @@ exports.BookService = void 0;
 const book_model_1 = __importDefault(require("./book.model"));
 const paginationHelper_1 = __importDefault(require("@/helpers/paginationHelper"));
 const book_constant_1 = require("./book.constant");
+const mongoose_1 = __importDefault(require("mongoose"));
 const ApiError_1 = __importDefault(require("@/errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const user_model_1 = __importDefault(require("../user/user.model"));
@@ -133,24 +134,56 @@ function getAllBooksFromDb(filters, paginations) {
     });
 }
 // add book wishlist in database by id
-function addBookWishlistInDb(id, userId) {
+function addBookWishlistInDb(bookId, userId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const book = yield book_model_1.default.findById(id);
+        const book = yield book_model_1.default.findById(bookId);
         if (!book) {
             throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Book not found");
         }
-        const user = user_model_1.default.isUserExist(userId.toString());
+        const user = user_model_1.default.isUserExist(userId);
         if (!user) {
             throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User not found");
         }
+        // convert string to object id
+        const convertedUserId = new mongoose_1.default.Types.ObjectId(userId);
         // Check if the book is already in wishlist
-        if (book.wishlist.includes(userId)) {
+        if (book.wishlist.includes(convertedUserId)) {
             throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Book already in wishlist");
         }
-        const result = yield book_model_1.default.findOneAndUpdate({ _id: id }, { $addToSet: { wishlist: userId } }, { new: true });
+        const result = yield book_model_1.default.findOneAndUpdate({ _id: bookId }, { $addToSet: { wishlist: userId } }, { new: true });
         return result;
     });
 }
+// remove book wishlist in database by id
+function removeBookWishlistFromDb(bookId, userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const book = yield book_model_1.default.findById(bookId);
+        if (!book) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Book not found");
+        }
+        const user = user_model_1.default.isUserExist(userId);
+        if (!user) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User not found");
+        }
+        // convert string to object id
+        const convertedUserId = new mongoose_1.default.Types.ObjectId(userId);
+        // check book is in wishlist or not
+        if (!book.wishlist.includes(convertedUserId)) {
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Book is not in wishlist");
+        }
+        const result = yield book_model_1.default.findOneAndUpdate({ _id: bookId }, { $pull: { wishlist: userId } }, {
+            new: true,
+            projection: {
+                wishlist: 0,
+                __v: 0,
+                createdAt: 0,
+                updatedAt: 0,
+            },
+        });
+        return result;
+    });
+}
+// get all wishlisted books from database by user id
 function getAllWishlistedBooksFromDb(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = user_model_1.default.isUserExist(userId);
@@ -159,6 +192,9 @@ function getAllWishlistedBooksFromDb(userId) {
         }
         const result = yield book_model_1.default.find({ wishlist: userId }, {
             wishlist: 0,
+            __v: 0,
+            createdAt: 0,
+            updatedAt: 0,
         });
         return result;
     });
@@ -171,4 +207,5 @@ exports.BookService = {
     deleteSingleBookFromDb,
     addBookWishlistInDb,
     getAllWishlistedBooksFromDb,
+    removeBookWishlistFromDb,
 };

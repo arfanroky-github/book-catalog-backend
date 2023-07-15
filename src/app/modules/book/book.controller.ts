@@ -82,9 +82,8 @@ const getAllBooks = catchAsync(async (req: Request, res: Response) => {
 
 // add book wishlist
 const addBookWishlist = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id as string;
-  const userId = req.body.userId;
-  const result = await BookService.addBookWishlistInDb(id, userId);
+  const { bookId, userId } = req.params as { bookId: string; userId: string };
+  const result = await BookService.addBookWishlistInDb(bookId, userId);
 
   sendResponse<BookType | null>(res, {
     statusCode: httpStatus.OK,
@@ -94,19 +93,33 @@ const addBookWishlist = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// get all wishlisted books
-const getAllWishlistedBooks = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.params.userId;
-  const result = await BookService.getAllWishlistedBooksFromDb(userId);
+// remove book wishlist
+const removeBookWishlist = catchAsync(async (req: Request, res: Response) => {
+  const { bookId, userId } = req.params as { bookId: string; userId: string };
+  const result = await BookService.removeBookWishlistFromDb(bookId, userId);
 
-  sendResponse<BookType[]>(res, {
+  sendResponse<BookType | null>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Book fetched successfully",
+    message: "Book is removed from wishlist successfully!",
     data: result,
   });
+});
 
-})
+// get all wishlisted books
+const getAllWishlistedBooks = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.params.userId;
+    const result = await BookService.getAllWishlistedBooksFromDb(userId);
+
+    sendResponse<BookType[]>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Book fetched successfully",
+      data: result,
+    });
+  }
+);
 
 export const BookController = {
   createBook,
@@ -115,5 +128,6 @@ export const BookController = {
   updateSingleBook,
   deleteSingleBook,
   addBookWishlist,
-  getAllWishlistedBooks
+  getAllWishlistedBooks,
+  removeBookWishlist,
 };
