@@ -23,14 +23,26 @@ const createBookSchema = z.object({
       })
       .min(4)
       .max(4),
-    reviews: z.object({
-      name: z.string(),
-      picture: z.string(),
-      message: z.string(),
-    }).optional(),
+    reviews: z
+      .object({
+        name: z.string(),
+        picture: z.string(),
+        message: z.string(),
+      })
+      .optional(),
+  }),
+});
+
+const updateBookSchema = z.object({
+  body: z.object({
+    title: z.string().optional(),
+    author: z.string().optional(),
+    genre: z.string().optional(),
+    publication: z.string().optional(),
   }),
 });
 
 export const BookValidation = {
   createBookSchema,
+  updateBookSchema
 };

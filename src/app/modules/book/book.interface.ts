@@ -20,6 +20,11 @@ type BookFilterType = {
   publication?: string;
 };
 
+type BookUpdateType = {
+  title?: string;
+  author?: string;
+  genre?: string;
+  publication?: string;
+};
 
-
-export { BookType, BookFilterType };
+export { BookType, BookFilterType, BookUpdateType };

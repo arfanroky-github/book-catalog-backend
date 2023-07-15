@@ -27,6 +27,8 @@ exports.BookService = void 0;
 const book_model_1 = __importDefault(require("./book.model"));
 const paginationHelper_1 = __importDefault(require("@/helpers/paginationHelper"));
 const book_constant_1 = require("./book.constant");
+const ApiError_1 = __importDefault(require("@/errors/ApiError"));
+const http_status_1 = __importDefault(require("http-status"));
 // create book in database
 function createBookInDb(payload) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -41,6 +43,39 @@ function createBookInDb(payload) {
 function getSingleBookFromDb(id) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield book_model_1.default.findById(id);
+    });
+}
+// update single book form database by id
+function updateSingleBookFromDb(id, payload) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // before updating the book check if the book exists
+        const book = yield book_model_1.default.findById(id);
+        if (!book) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Book not found");
+        }
+        // check if the payload has any value
+        if (Object.keys(payload).length === 0) {
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "No payload provided");
+        }
+        // lowercase all the string value
+        const { publication, title, genre, author } = payload;
+        const updatedBook = {};
+        if (title) {
+            updatedBook["title"] = title.toLowerCase();
+        }
+        else if (genre) {
+            updatedBook["genre"] = genre.toLowerCase();
+        }
+        else if (author) {
+            updatedBook["author"] = author.toLowerCase();
+        }
+        else {
+            updatedBook["publication"] = publication;
+        }
+        const result = yield book_model_1.default.findOneAndUpdate({ _id: id }, updatedBook, {
+            new: true,
+        });
+        return result;
     });
 }
 // get all books from database with filtering and searching
@@ -90,4 +125,5 @@ exports.BookService = {
     createBookInDb,
     getAllBooksFromDb,
     getSingleBookFromDb,
+    updateSingleBookFromDb,
 };

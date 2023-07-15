@@ -24,13 +24,24 @@ const createBookSchema = zod_1.z.object({
         })
             .min(4)
             .max(4),
-        reviews: zod_1.z.object({
+        reviews: zod_1.z
+            .object({
             name: zod_1.z.string(),
             picture: zod_1.z.string(),
             message: zod_1.z.string(),
-        }).optional(),
+        })
+            .optional(),
+    }),
+});
+const updateBookSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        title: zod_1.z.string().optional(),
+        author: zod_1.z.string().optional(),
+        genre: zod_1.z.string().optional(),
+        publication: zod_1.z.string().optional(),
     }),
 });
 exports.BookValidation = {
     createBookSchema,
+    updateBookSchema
 };

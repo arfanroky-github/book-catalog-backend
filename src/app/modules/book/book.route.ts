@@ -13,9 +13,16 @@ router.post(
   BookController.createBook
 );
 
-// get single books
-router.get('/:id', auth(), BookController.getSingleBook)
+// get single book
+router.get("/:id", auth(), BookController.getSingleBook);
 
+// update single book
+router.patch(
+  "/:id",
+  auth(),
+  validateRequest(BookValidation.updateBookSchema),
+  BookController.updateSingleBook
+);
 
 // get all books
 router.get("/", auth(), BookController.getAllBooks);

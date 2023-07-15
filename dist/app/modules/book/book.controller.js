@@ -31,7 +31,7 @@ const createBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
-// get single books
+// get single book
 const getSingleBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     const result = yield book_service_1.BookService.getSingleBookFromDb(id);
@@ -40,6 +40,18 @@ const getSingleBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         success: true,
         message: "Book fetched successfully",
         data: result,
+    });
+}));
+// update single book
+const updateSingleBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const bookData = req.body;
+    const result = yield book_service_1.BookService.updateSingleBookFromDb(id, bookData);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Book is updated successfully!",
+        data: result
     });
 }));
 // get all books
@@ -59,5 +71,6 @@ const getAllBooks = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 exports.BookController = {
     createBook,
     getAllBooks,
-    getSingleBook
+    getSingleBook,
+    updateSingleBook
 };
