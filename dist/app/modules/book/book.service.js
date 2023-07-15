@@ -30,20 +30,28 @@ const book_constant_1 = require("./book.constant");
 // create book in database
 function createBookInDb(payload) {
     return __awaiter(this, void 0, void 0, function* () {
-        const book = new book_model_1.default(payload);
+        // before saving the new book
+        // i want to lowercase the title, author and genre
+        const lowercasedPayload = Object.assign(Object.assign({}, payload), { title: payload.title.toLowerCase(), author: payload.author.toLowerCase(), genre: payload.genre.toLowerCase() });
+        const book = new book_model_1.default(lowercasedPayload);
         return yield book.save();
+    });
+}
+// get single book from database by id
+function getSingleBookFromDb(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield book_model_1.default.findById(id);
     });
 }
 // get all books from database with filtering and searching
 function getAllBooksFromDb(filters, paginations) {
     return __awaiter(this, void 0, void 0, function* () {
-        const bookSearchableFiels = book_constant_1.bookSearchAndFiltersFields.filter((item) => !item.includes("searchTerm"));
         const { searchTerm } = filters, otherFilters = __rest(filters, ["searchTerm"]);
         const { page, limit, sortBy, sortOrder, skip } = (0, paginationHelper_1.default)(paginations);
         const andConditions = [];
         if (searchTerm) {
             andConditions.push({
-                $or: bookSearchableFiels.map((field) => ({
+                $or: book_constant_1.bookSearchableFields.map((field) => ({
                     [field]: {
                         $regex: searchTerm,
                         $options: "i",
@@ -81,4 +89,5 @@ function getAllBooksFromDb(filters, paginations) {
 exports.BookService = {
     createBookInDb,
     getAllBooksFromDb,
+    getSingleBookFromDb,
 };

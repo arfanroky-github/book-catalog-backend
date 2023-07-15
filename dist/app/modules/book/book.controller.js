@@ -18,8 +18,8 @@ const book_service_1 = require("./book.service");
 const sendResponse_1 = __importDefault(require("@/helpers/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const pick_1 = __importDefault(require("@/shared/pick"));
-const book_constant_1 = require("./book.constant");
 const paginationFields_1 = require("@/constants/paginationFields");
+const book_constant_1 = require("./book.constant");
 // create book
 const createBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const bookData = req.body;
@@ -31,9 +31,21 @@ const createBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+// get single books
+const getSingleBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield book_service_1.BookService.getSingleBookFromDb(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Book fetched successfully",
+        data: result,
+    });
+}));
 // get all books
 const getAllBooks = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryData = (0, pick_1.default)(req.query, book_constant_1.bookSearchAndFiltersFields);
+    const queryData = (0, pick_1.default)(req.query, book_constant_1.bookFilterableFiels);
+    console.log(queryData);
     const paginationProps = (0, pick_1.default)(req.query, paginationFields_1.paginationFields);
     const result = yield book_service_1.BookService.getAllBooksFromDb(queryData, paginationProps);
     (0, sendResponse_1.default)(res, {
@@ -41,10 +53,11 @@ const getAllBooks = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         success: true,
         message: "Book fetched successfully",
         data: result.data,
-        meta: result.meta
+        meta: result.meta,
     });
 }));
 exports.BookController = {
     createBook,
-    getAllBooks
+    getAllBooks,
+    getSingleBook
 };

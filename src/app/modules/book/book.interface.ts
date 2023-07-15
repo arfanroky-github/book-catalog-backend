@@ -13,10 +13,8 @@ type BookType = {
   //   Rating?: number;
 };
 
-// ["searchTerm", "title", "author", "genre", "publicaiton"];
 type BookFilterType = {
   searchTerm?: string;
-  title?: string;
   author?: string;
   genre?: string;
   publication?: string;

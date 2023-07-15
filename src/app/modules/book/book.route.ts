@@ -13,6 +13,10 @@ router.post(
   BookController.createBook
 );
 
+// get single books
+router.get('/:id', auth(), BookController.getSingleBook)
+
+
 // get all books
 router.get("/", auth(), BookController.getAllBooks);
 

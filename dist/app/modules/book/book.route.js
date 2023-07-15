@@ -12,6 +12,8 @@ const auth_1 = __importDefault(require("@/app/middlewares/auth"));
 const router = express_1.default.Router();
 // create book
 router.post("/create-book", (0, auth_1.default)(), (0, validateRequest_1.default)(book_validation_1.BookValidation.createBookSchema), book_controller_1.BookController.createBook);
+// get single books
+router.get('/:id', (0, auth_1.default)(), book_controller_1.BookController.getSingleBook);
 // get all books
 router.get("/", (0, auth_1.default)(), book_controller_1.BookController.getAllBooks);
 exports.BookRoutes = router;
