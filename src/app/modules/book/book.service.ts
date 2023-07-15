@@ -63,6 +63,16 @@ async function updateSingleBookFromDb(
   return result;
 }
 
+// delete single book from database by id
+async function deleteSingleBookFromDb(id: string): Promise<BookType | null> {
+  const book = await Book.findById(id);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Book not found");
+  }
+
+  return await Book.findOneAndDelete({_id: id});
+}
+
 // get all books from database with filtering and searching
 async function getAllBooksFromDb(
   filters: BookFilterType,
@@ -123,4 +133,5 @@ export const BookService = {
   getAllBooksFromDb,
   getSingleBookFromDb,
   updateSingleBookFromDb,
+  deleteSingleBookFromDb,
 };

@@ -16,6 +16,8 @@ router.post("/create-book", (0, auth_1.default)(), (0, validateRequest_1.default
 router.get("/:id", (0, auth_1.default)(), book_controller_1.BookController.getSingleBook);
 // update single book
 router.patch("/:id", (0, auth_1.default)(), (0, validateRequest_1.default)(book_validation_1.BookValidation.updateBookSchema), book_controller_1.BookController.updateSingleBook);
+// delete single book
+router.delete("/:id", (0, auth_1.default)(), book_controller_1.BookController.deleteSingleBook);
 // get all books
 router.get("/", (0, auth_1.default)(), book_controller_1.BookController.getAllBooks);
 exports.BookRoutes = router;

@@ -24,6 +24,9 @@ router.patch(
   BookController.updateSingleBook
 );
 
+// delete single book
+router.delete("/:id", auth(), BookController.deleteSingleBook);
+
 // get all books
 router.get("/", auth(), BookController.getAllBooks);
 

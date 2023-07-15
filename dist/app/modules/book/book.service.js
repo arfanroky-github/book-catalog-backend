@@ -78,6 +78,16 @@ function updateSingleBookFromDb(id, payload) {
         return result;
     });
 }
+// delete single book from database by id
+function deleteSingleBookFromDb(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const book = yield book_model_1.default.findById(id);
+        if (!book) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Book not found");
+        }
+        return yield book_model_1.default.findOneAndDelete({ _id: id });
+    });
+}
 // get all books from database with filtering and searching
 function getAllBooksFromDb(filters, paginations) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -126,4 +136,5 @@ exports.BookService = {
     getAllBooksFromDb,
     getSingleBookFromDb,
     updateSingleBookFromDb,
+    deleteSingleBookFromDb,
 };
