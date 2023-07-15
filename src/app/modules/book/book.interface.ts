@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 type Reviews = {
   name: string;
   picture: string;
@@ -10,7 +12,7 @@ type BookType = {
   genre: string;
   publication: string;
   reviews?: Reviews;
-  //   Rating?: number;
+  wishlist: Types.ObjectId[]; // Array of ObjectIds referencing users
 };
 
 type BookFilterType = {

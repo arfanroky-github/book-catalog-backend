@@ -21,6 +21,12 @@ const bookSchema = new mongoose_1.Schema({
         maxlength: 4,
     },
     reviews: String,
+    wishlist: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "User", // Assuming you have a "User" model
+        },
+    ],
 }, {
     timestamps: true,
     toJSON: {

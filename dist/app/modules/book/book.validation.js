@@ -41,7 +41,15 @@ const updateBookSchema = zod_1.z.object({
         publication: zod_1.z.string().optional(),
     }),
 });
+const wishlistSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        userId: zod_1.z.string({
+            required_error: "UserId is required",
+        }),
+    }),
+});
 exports.BookValidation = {
     createBookSchema,
-    updateBookSchema
+    updateBookSchema,
+    wishlistSchema,
 };

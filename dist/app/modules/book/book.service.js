@@ -29,6 +29,7 @@ const paginationHelper_1 = __importDefault(require("@/helpers/paginationHelper")
 const book_constant_1 = require("./book.constant");
 const ApiError_1 = __importDefault(require("@/errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
+const user_model_1 = __importDefault(require("../user/user.model"));
 // create book in database
 function createBookInDb(payload) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -131,10 +132,26 @@ function getAllBooksFromDb(filters, paginations) {
         };
     });
 }
+// add book wishlist in database by id
+function addBookWishlistInDb(id, userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const book = yield book_model_1.default.findById(id);
+        if (!book) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Book not found");
+        }
+        const user = user_model_1.default.isUserExist(userId);
+        if (!user) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User not found");
+        }
+        const result = yield book_model_1.default.findOneAndUpdate({ _id: id }, { $addToSet: { wishlist: userId } }, { new: true });
+        return result;
+    });
+}
 exports.BookService = {
     createBookInDb,
     getAllBooksFromDb,
     getSingleBookFromDb,
     updateSingleBookFromDb,
     deleteSingleBookFromDb,
+    addBookWishlistInDb,
 };

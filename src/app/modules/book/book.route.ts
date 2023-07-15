@@ -30,4 +30,12 @@ router.delete("/:id", auth(), BookController.deleteSingleBook);
 // get all books
 router.get("/", auth(), BookController.getAllBooks);
 
+// add book wishlist
+router.post(
+  "/:id/wishlist",
+  auth(),
+  validateRequest(BookValidation.wishlistSchema),
+  BookController.addBookWishlist
+);
+
 export const BookRoutes = router;

@@ -20,4 +20,6 @@ router.patch("/:id", (0, auth_1.default)(), (0, validateRequest_1.default)(book_
 router.delete("/:id", (0, auth_1.default)(), book_controller_1.BookController.deleteSingleBook);
 // get all books
 router.get("/", (0, auth_1.default)(), book_controller_1.BookController.getAllBooks);
+// add book wishlist
+router.post("/:id/wishlist", (0, auth_1.default)(), (0, validateRequest_1.default)(book_validation_1.BookValidation.wishlistSchema), book_controller_1.BookController.addBookWishlist);
 exports.BookRoutes = router;

@@ -42,7 +42,16 @@ const updateBookSchema = z.object({
   }),
 });
 
+const wishlistSchema = z.object({
+  body: z.object({
+    userId: z.string({
+      required_error: "UserId is required",
+    }),
+  }),
+});
+
 export const BookValidation = {
   createBookSchema,
-  updateBookSchema
+  updateBookSchema,
+  wishlistSchema,
 };

@@ -68,7 +68,6 @@ const deleteSingleBook = (0, catchAsync_1.default)((req, res) => __awaiter(void 
 // get all books
 const getAllBooks = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const queryData = (0, pick_1.default)(req.query, book_constant_1.bookFilterableFiels);
-    console.log(queryData);
     const paginationProps = (0, pick_1.default)(req.query, paginationFields_1.paginationFields);
     const result = yield book_service_1.BookService.getAllBooksFromDb(queryData, paginationProps);
     (0, sendResponse_1.default)(res, {
@@ -79,10 +78,23 @@ const getAllBooks = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         meta: result.meta,
     });
 }));
+// add book wishlist
+const addBookWishlist = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const userId = req.body.userId;
+    const result = yield book_service_1.BookService.addBookWishlistInDb(id, userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Book is added to wishlist successfully!",
+        data: result,
+    });
+}));
 exports.BookController = {
     createBook,
     getAllBooks,
     getSingleBook,
     updateSingleBook,
     deleteSingleBook,
+    addBookWishlist
 };

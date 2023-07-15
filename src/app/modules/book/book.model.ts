@@ -22,6 +22,12 @@ const bookSchema = new Schema<BookType>(
       maxlength: 4,
     },
     reviews: String,
+    wishlist: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User", // Assuming you have a "User" model
+      },
+    ],
   },
   {
     timestamps: true,

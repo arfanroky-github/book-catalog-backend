@@ -7,6 +7,7 @@ import { bookSearchableFields } from "./book.constant";
 import { SortOrder } from "mongoose";
 import ApiError from "@/errors/ApiError";
 import httpStatus from "http-status";
+import User from "../user/user.model";
 
 // create book in database
 async function createBookInDb(payload: BookType) {
@@ -70,7 +71,7 @@ async function deleteSingleBookFromDb(id: string): Promise<BookType | null> {
     throw new ApiError(httpStatus.NOT_FOUND, "Book not found");
   }
 
-  return await Book.findOneAndDelete({_id: id});
+  return await Book.findOneAndDelete({ _id: id });
 }
 
 // get all books from database with filtering and searching
@@ -128,10 +129,32 @@ async function getAllBooksFromDb(
   };
 }
 
+// add book wishlist in database by id
+async function addBookWishlistInDb(id: string, userId: string) {
+
+  const book = await Book.findById(id);
+  if (!book) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Book not found");
+  }
+  const user = User.isUserExist(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  const result = await Book.findOneAndUpdate(
+    { _id: id },
+    { $addToSet: { wishlist: userId } },
+    { new: true }
+  );
+
+  return result;
+}
+
 export const BookService = {
   createBookInDb,
   getAllBooksFromDb,
   getSingleBookFromDb,
   updateSingleBookFromDb,
   deleteSingleBookFromDb,
+  addBookWishlistInDb,
 };

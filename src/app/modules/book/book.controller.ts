@@ -64,7 +64,6 @@ const deleteSingleBook = catchAsync(async (req: Request, res: Response) => {
 // get all books
 const getAllBooks = catchAsync(async (req: Request, res: Response) => {
   const queryData = pick(req.query, bookFilterableFiels);
-  console.log(queryData);
   const paginationProps = pick(req.query, paginationFields);
 
   const result = await BookService.getAllBooksFromDb(
@@ -81,10 +80,25 @@ const getAllBooks = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// add book wishlist
+const addBookWishlist = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const userId = req.body.userId;
+  const result = await BookService.addBookWishlistInDb(id, userId);
+
+  sendResponse<BookType | null>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Book is added to wishlist successfully!",
+    data: result,
+  });
+});
+
 export const BookController = {
   createBook,
   getAllBooks,
   getSingleBook,
   updateSingleBook,
   deleteSingleBook,
+  addBookWishlist
 };
