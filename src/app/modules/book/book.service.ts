@@ -4,7 +4,7 @@ import Book from "./book.model";
 import { GenericResponse } from "@/interfaces/commonResponse";
 import paginationHelper from "@/helpers/paginationHelper";
 import { bookSearchableFields } from "./book.constant";
-import { SortOrder } from "mongoose";
+import mongoose, { SortOrder, Types } from "mongoose";
 import ApiError from "@/errors/ApiError";
 import httpStatus from "http-status";
 import User from "../user/user.model";
@@ -130,21 +130,46 @@ async function getAllBooksFromDb(
 }
 
 // add book wishlist in database by id
-async function addBookWishlistInDb(id: string, userId: string) {
-
+async function addBookWishlistInDb(
+  id: string,
+  userId: Types.ObjectId
+): Promise<BookType | null> {
   const book = await Book.findById(id);
   if (!book) {
     throw new ApiError(httpStatus.NOT_FOUND, "Book not found");
   }
+  const user = User.isUserExist(userId.toString());
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  // Check if the book is already in wishlist
+  if (book.wishlist.includes(userId)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Book already in wishlist");
+  }
+  const result = await Book.findOneAndUpdate(
+    { _id: id },
+    { $addToSet: { wishlist: userId } },
+    { new: true }
+  );
+
+  return result;
+}
+
+async function getAllWishlistedBooksFromDb(userId: string) {
   const user = User.isUserExist(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  const result = await Book.findOneAndUpdate(
-    { _id: id },
-    { $addToSet: { wishlist: userId } },
-    { new: true }
+  const result = await Book.find(
+    { wishlist: userId },
+    {
+      wishlist: 0,
+      __v: 0,
+      createdAt: 0,
+      updatedAt: 0,
+    }
   );
 
   return result;
@@ -157,4 +182,5 @@ export const BookService = {
   updateSingleBookFromDb,
   deleteSingleBookFromDb,
   addBookWishlistInDb,
+  getAllWishlistedBooksFromDb,
 };

@@ -94,11 +94,26 @@ const addBookWishlist = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// get all wishlisted books
+const getAllWishlistedBooks = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  const result = await BookService.getAllWishlistedBooksFromDb(userId);
+
+  sendResponse<BookType[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Book fetched successfully",
+    data: result,
+  });
+
+})
+
 export const BookController = {
   createBook,
   getAllBooks,
   getSingleBook,
   updateSingleBook,
   deleteSingleBook,
-  addBookWishlist
+  addBookWishlist,
+  getAllWishlistedBooks
 };

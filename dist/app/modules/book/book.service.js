@@ -139,11 +139,27 @@ function addBookWishlistInDb(id, userId) {
         if (!book) {
             throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Book not found");
         }
+        const user = user_model_1.default.isUserExist(userId.toString());
+        if (!user) {
+            throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User not found");
+        }
+        // Check if the book is already in wishlist
+        if (book.wishlist.includes(userId)) {
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Book already in wishlist");
+        }
+        const result = yield book_model_1.default.findOneAndUpdate({ _id: id }, { $addToSet: { wishlist: userId } }, { new: true });
+        return result;
+    });
+}
+function getAllWishlistedBooksFromDb(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
         const user = user_model_1.default.isUserExist(userId);
         if (!user) {
             throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User not found");
         }
-        const result = yield book_model_1.default.findOneAndUpdate({ _id: id }, { $addToSet: { wishlist: userId } }, { new: true });
+        const result = yield book_model_1.default.find({ wishlist: userId }, {
+            wishlist: 0,
+        });
         return result;
     });
 }
@@ -154,4 +170,5 @@ exports.BookService = {
     updateSingleBookFromDb,
     deleteSingleBookFromDb,
     addBookWishlistInDb,
+    getAllWishlistedBooksFromDb,
 };

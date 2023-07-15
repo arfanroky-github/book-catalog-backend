@@ -38,4 +38,7 @@ router.post(
   BookController.addBookWishlist
 );
 
+// get all wishlisted books
+router.get("/:userId/wishlist", auth(), BookController.getAllWishlistedBooks);
+
 export const BookRoutes = router;

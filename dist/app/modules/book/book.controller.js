@@ -90,11 +90,23 @@ const addBookWishlist = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
         data: result,
     });
 }));
+// get all wishlisted books
+const getAllWishlistedBooks = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId;
+    const result = yield book_service_1.BookService.getAllWishlistedBooksFromDb(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Book fetched successfully",
+        data: result,
+    });
+}));
 exports.BookController = {
     createBook,
     getAllBooks,
     getSingleBook,
     updateSingleBook,
     deleteSingleBook,
-    addBookWishlist
+    addBookWishlist,
+    getAllWishlistedBooks
 };
